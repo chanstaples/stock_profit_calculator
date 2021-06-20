@@ -38,24 +38,31 @@ currentDayEndPrice = 0
 userEndPrice = 0
 
 #This section retrieves information from Yahoo Finance.
+data = requests.get(URL).text
+
+#This section retrieves the most recent average of the high and low stock share price.
 try:
-	data = requests.get(URL).text
-	firstSplit = data.split(str(user_datetime))[9]
-	secondSplit = firstSplit.split("HistoricalPriceStore")[1]
-	currentDaySplit = secondSplit.split("date")[1]
+	firstSplit = data.split("HistoricalPriceStore")[1]
+	currentDaySplit = firstSplit.split("date")[1]
 	currentDayHigh = currentDaySplit.split("high")[1]
 	currentDayLow = currentDaySplit.split("low")[1]
 	currentDayHighPrice = currentDayHigh.split(",")[0].strip("\"").strip(":")
 	currentDayLowPrice = currentDayLow.split(",")[0].strip("\"").strip(":")
 	currentDayEndPrice = (float(currentDayHighPrice) + float(currentDayLowPrice))/2
-	thirdSplit = secondSplit.split(str(second_user_datetime))[1]
-	userHigh = thirdSplit.split("high")[1]
-	userLow = thirdSplit.split("low")[1]
+except:
+	print("{} has an issue with determing current stock's stock share price with ticker {}.".format(date1,ticker))
+
+#This section retrieves the user selected average of the high and low stock share price.
+try:
+	firstSplit = data.split("HistoricalPriceStore")[1]
+	userSplit = firstSplit.split(str(second_user_datetime))[1]
+	userHigh = userSplit.split("high")[1]
+	userLow = userSplit.split("low")[1]
 	userHighPrice = userHigh.split(",")[0].strip("\"").strip(":")
 	userLowPrice = userLow.split(",")[0].strip("\"").strip(":")
 	userEndPrice = (float(userHighPrice) + float(userLowPrice))/2
 except:
-	print("{} has an issue with ticker {}.".format(date1,ticker))
+	print("{} has an issue with determing user's stock share price with ticker {}.".format(date1,ticker))
 
 #This section prints the results.
 try:
