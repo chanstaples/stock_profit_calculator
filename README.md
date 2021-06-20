@@ -15,4 +15,6 @@ For Windows users, it is recommended to use either the Command Prompt or an appr
 From the Command Prompt, navigate to the program directory. To run the program, type "python3 stock_return.py" without the quotation marks.
 For Linux/Unix users, it is recommended to use the Command Line. Navigate to the program directory and run the program by typing "./python3 stock_return.py" without quotation marks.
 After running the program, enter in the company ticker, the year the stock was purchased, the month the stock was purchased, the day the stock was purchased, and the number of shares purchased on that date. At anytime, the program can be exited by typing "exit". 
+
+# Results
 The output will be the gross profit. This is calculated by retrieving the average of the high and low stock share price of the company for the date entered then multiplying the this value by the number of shares. This is the user stock share price. Then the most recent stock share price is retrieved by calculating the average of the most recent high and low stock share price. This number is then also multiplied by number of shares to get the most recent stock share prie. Lastly, the user stock share price is subtracted from the most rcent stock share price to get the gross profit. 
