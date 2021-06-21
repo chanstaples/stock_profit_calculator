@@ -27,13 +27,12 @@ date1 = "{}-{}-{}".format(month,day,year)
 shares = get_user_shares(ticker,date1)
 print("Beginning calculation.\n")
 user_datetime = getStartDateTime(date1)
-second_user_datetime = getStartDateTime2(date1)
 current_day = datetime.now().timestamp()
 current_day = int(current_day)
 
 #This section prepares program to retrieve information from Yahoo Finance.
 URL="https://finance.yahoo.com/quote/{}/history?period1={}&period2={}&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true".format(ticker,user_datetime,current_day)
-#webbrowser.open(URL)
+webbrowser.open(URL)
 currentDayEndPrice = 0
 userEndPrice = 0
 
@@ -55,7 +54,9 @@ except:
 #This section retrieves the user selected average of the high and low stock share price.
 try:
 	firstSplit = data.split("HistoricalPriceStore")[1]
-	userSplit = firstSplit.split(str(second_user_datetime))[1]
+	print(firstSplit)
+	print(user_datetime)
+	userSplit = firstSplit.split(str(user_datetime))[1]
 	userHigh = userSplit.split("high")[1]
 	userLow = userSplit.split("low")[1]
 	userHighPrice = userHigh.split(",")[0].strip("\"").strip(":")
