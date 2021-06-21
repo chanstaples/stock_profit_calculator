@@ -32,7 +32,6 @@ current_day = int(current_day)
 
 #This section prepares program to retrieve information from Yahoo Finance.
 URL="https://finance.yahoo.com/quote/{}/history?period1={}&period2={}&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true".format(ticker,user_datetime,current_day)
-webbrowser.open(URL)
 currentDayEndPrice = 0
 userEndPrice = 0
 
