@@ -122,18 +122,14 @@ def get_user_shares(ticker,date):
 
 #This method retrieves user's date of stock purchase in Epoch format.
 def getStartDateTime(date):
-	datetime1 = datetime.strptime(date,"%m-%d-%Y")
+	datetime1 = datetime.strptime(date,"%m-%d-%Y")		
 	datetimeEpoch = datetime1.timestamp()
-	fixedEpoch = int(datetimeEpoch) - 86400
-	return fixedEpoch
-
-##############################################################################################################################################################################################
-
-#This method retrieves user's date of stock purchase in Epoch format, but for the time that Yahoo Finance uses which is 9.5 hrs ahead of EST.
-def getStartDateTime2(date):
-	datetime1 = datetime.strptime(date,"%m-%d-%Y")
-	datetimeEpoch = datetime1.timestamp()
-	fixedEpoch = int(datetimeEpoch) - 86400 + 34200
+	if(datetime1.weekday() == 5):
+		fixedEpoch = int(datetimeEpoch) + 34200 + 172800
+	elif(datetime1.weekday() == 6):
+		fixedEpoch = int(datetimeEpoch) + 34200 + 86400
+	else:	
+		fixedEpoch = int(datetimeEpoch) + 34200
 	return fixedEpoch
 
 ##############################################################################################################################################################################################
@@ -147,41 +143,56 @@ def fixProfit(profit):
 
 ##############################################################################################################################################################################################
 
+#This method determines if user's date occurred over 1 year ago. 
+def overOneYear(year,month,day):
+	if(date.today().year - int(year) < 1):
+		return False
+	elif((date.today().year - int(year) == 1) and (date.today().month - int(month) < 1)):
+		return False
+	elif((date.today().year - int(year) == 1) and (date.today().month - int(month) == 0) and (date.today().day - int(day) < 1)):
+		return False
+	else:
+		return True 
+
+##############################################################################################################################################################################################
+
 #This method determines the net profit and includes estimates for long term and short term capital gains tax rate as well as a loss. 
 def getProfitAfterTax(year,month,day,profit,ticker,shares):
 	profit = float(profit)
 	if(profit > 0.00):
-		if((date.today().year - int(year) >= 1) and (date.today().month - int(month) >= 0) and (date.today().day - int(day) >= 0)):
+		yearBoolean = overOneYear(year,month,day)
+		if(yearBoolean == True):
 			print("If your {} shares of {} were sold today, you would pay the long term capital gains tax rate on your profit.\n".format(shares,ticker))
-			print("If your annual taxable income is less than $40,000, you pay no long term capital gains tax. Your net profit ${} stays the same.\n".format(profit))
+			print("If your annual taxable income is less than $40,000, you pay no long term capital gains tax. Your net profit ${} stays the same.".format(profit))
 			profit15 = fixProfit(round(profit * 0.85,2))
-			print("If your annual taxable income is $40,001 to $441,450 (as of 2021), your long term capital gains tax rate is 15%. Your net profit is ${}.\n".format(profit15))
+			print("If your annual taxable income is $40,001 to $441,450 (as of 2021), your long term capital gains tax rate is 15%. Your net profit is ${}.".format(profit15))
 			profit20 = fixProfit(round(profit * 0.8,2))
-			print("If your annual taxable income is $441,451 or more (as of 2021), your long term capital gains tax rate is 20%. Your net profit is ${}.\n".format(profit20))
+			print("If your annual taxable income is $441,451 or more (as of 2021), your long term capital gains tax rate is 20%. Your net profit is ${}.".format(profit20))
 		else:
-			print("If your {} shares of {} were sold today, you would pay the short term capital gains tax rate on your profit.\n".format(shares,ticker))
-			print("Short term capital gains tax rate depends on your filing status (Single, Married filing jointly, Married filing separately, head of household) and taxable income.\n")
-			print("In addition to the tax rate, there is also an amount that you will have to pay that depends on your taxable income.\n")
+			print("If your {} shares of {} were sold today, you would pay the short term capital gains tax rate on your profit.".format(shares,ticker))
+			print("Short term capital gains tax rate depends on your filing status (Single, Married filing jointly, Married filing separately, head of household) and taxable income.")
+			print("In addition to the tax rate, there is also an amount that you will have to pay that depends on your taxable income.")
 			print("Due to these variances, the net profits printed below are ONLY the tax rate for 2021. If you would like to explore the tax brackets further, here is a link to learn more: https://www.nerdwallet.com/article/taxes/federal-income-tax-brackets.\n")
 			profit10 = fixProfit(round(profit*0.9,2))
-			print("If your annual tax income is $0-$9,875, then your tax rate is 10%. Your net profit is ${}.\n".format(profit10))
+			print("If your annual tax income is $0-$9,875, then your tax rate is 10%. Your net profit is ${}.".format(profit10))
 			profit12 = fixProfit(round(profit*0.88,2))
-			print("If your annual tax income is $9,876-$40,125, then your tax rate is 12%. Your net profit is ${}.\n".format(profit12))
+			print("If your annual tax income is $9,876-$40,125, then your tax rate is 12%. Your net profit is ${}.".format(profit12))
 			profit22 = fixProfit(round(profit*0.78,2))
-			print("If your annual tax income is $40,126-$85,525, then your tax rate is 22%. Your net profit is ${}.\n".format(profit22))
+			print("If your annual tax income is $40,126-$85,525, then your tax rate is 22%. Your net profit is ${}.".format(profit22))
 			profit24 = fixProfit(round(profit*0.76,2))
-			print("If your annual tax income is $85,526-$163,300, then your tax rate is 24%. Your net profit is ${}.\n".format(profit24))
+			print("If your annual tax income is $85,526-$163,300, then your tax rate is 24%. Your net profit is ${}.".format(profit24))
 			profit32 = fixProfit(round(profit*0.68,2))
-			print("If your annual tax income is $163,301-$207,350, then your tax rate is 32%. Your net profit is ${}.\n".format(profit32))
+			print("If your annual tax income is $163,301-$207,350, then your tax rate is 32%. Your net profit is ${}.".format(profit32))
 			profit35 = fixProfit(round(profit*0.65,2))
-			print("If your annual tax income is $207,351-$518,400, then your tax rate is 35%. Your net profit is ${}.\n".format(profit35))
+			print("If your annual tax income is $207,351-$518,400, then your tax rate is 35%. Your net profit is ${}.".format(profit35))
 			profit37 = fixProfit(round(profit*0.63,2))
-			print("If your annual tax income is $518,401 or more, then your tax rate is 37%. Your net profit is ${}.\n".format(profit37))
+			print("If your annual tax income is $518,401 or more, then your tax rate is 37%. Your net profit is ${}.".format(profit37))
 	else:
-		print("Your gross profit of {} is negative, meaning that if you sold {} shares of {} now, you can a capital loss on your taxes and can offset stock gains or any other capital gains in the same year.\n".format(profit,shares,ticker))
+		print("Your gross profit of {} is negative, meaning that if you sold {} shares of {} now, you can a capital loss on your taxes and can offset stock gains or any other capital gains in the same year.".format(profit,shares,ticker))
 
 ##############################################################################################################################################################################################
 
 #EOF
 
 ##############################################################################################################################################################################################
+		
